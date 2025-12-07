@@ -1,20 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/logint.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
-  register(registerDto: RegisterDto) {
+  private readonly logger = new Logger(AuthService.name);
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register(registerDto: RegisterDto) {
+    // Todo: Handle prisma transaction
+    const existingUser = await this.userService.getUserByEmail(
+      registerDto.email,
+    );
+    if (existingUser) {
+      throw new ConflictException('Email already taken');
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(registerDto.password, saltRounds);
+
+    const user = await this.userService.createUser({
+      ...registerDto,
+      password: hashedPassword,
+    });
+
+    this.logger.log(`New user has been created: ${user.id}`);
+
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return {
+      ...user,
+      tokens: {
+        accessToken,
+      },
+    };
+  }
+
+  async login(loginDto: LoginDto) {
     /**
-     * Before registering user to the database, check these points
-     * 1. Check if email already exits (User module)
-     * 2. Hash the password then store in db (User module)
-     * 3. Create user (user Module)
-     * 4. return accessToken and refreshToken
+     * 1. Get the user from db
+     * 2. Math the password with hashed password
+     * 3. Create JWT token
+     * 4. Return user and JWT token
      */
 
-    const user = this.userService.getUserByEmail(registerDto.email);
-    return user;
+    const isUserExist = await this.userService.getUserByEmail(loginDto.email);
+
+    if (!isUserExist) {
+      throw new UnauthorizedException(`Email or password is invalid!`);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(
+      loginDto.password,
+      isUserExist.password,
+    );
+
+    if (!isPasswordMatch) {
+      throw new UnauthorizedException(`Email or password is invalid!`);
+    }
   }
 }
