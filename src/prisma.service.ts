@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { PrismaClient } from 'generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg'; // The node-postgres driver adapter connect prisma client to your database
+import { PrismaClient } from 'generated/prisma/client'; // Prisma Client library for querying your database
+import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
   constructor() {
-    const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const adapter = new PrismaPg(pool);
     super({ adapter });
   }
 }

@@ -58,3 +58,43 @@ Notes:
   - check/validate the data
   - change/transform the data
   4. After the pipe finishes, the controller method is called with the cleaned or transformed data.
+
+Request Flow
+USER -> MIDDLEWARE -> ROUTES -> CONTROLLERS -> SERVICES -> DATABASE -> RESPONSE TO END USER
+
+- In NestJs [MIDDLEWARE -> ROUTES -> CONTROLLERS -> SERVICES] is a Module
+
+What is decorator?
+
+What is private readonly?
+By adding the access modifier (`private`) directly in the constructor arguments, TypeScript automatically:
+
+1.  **Declares** a property on the class with that name.
+2.  **Assigns** the value passed into the constructor to that property.
+
+### Why use it?
+
+In NestJS, this is the primary way **Dependency Injection** works. You are telling Nest: \_"I need an instance of `AppService`. Please find it, inject it here, and make sure I can use it anywhere in this class, but don't let anyone else touch it or change it."
+
+### Prisma Client
+
+- Prisma Client is a type-safe database client that's generated from your Prisma model definition. Because of this approach, Prisma Client can expose CRUD operations that are tailored specifically to your models.
+- To generate the prisma client run this command: `npx prisma generate`
+- To migrate `npx prisma migrate dev --name init`
+
+## Volumes in Docker
+
+- In Docker, Volumes are the mechanism used to persist data. Without a volume, a database container is like a "Reset" button—every time you stop or delete the container, all your data (users, tasks, tables) disappears forever.
+
+#### The Problem: Ephemeral Containers
+
+By default, files created inside a container are stored on a writable container layer.
+
+- You start the Postgres container.
+- You create a "User" table and add 10 rows.
+- You run docker-compose down.
+- The data is gone. The next time you start it, you have a blank database.
+
+#### The Solution: Volumes (The "External Hard Drive")
+
+- A volume is a dedicated folder on your actual computer's hard drive that is "mounted" (mapped) into the container.
