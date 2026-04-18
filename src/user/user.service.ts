@@ -7,7 +7,9 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getUserByEmail(email: string) {
-    return await this.prismaService.user.findFirst({ where: { email } });
+    return await this.prismaService.user.findFirst({
+      where: { email },
+    });
   }
 
   async createUser(registerDto: RegisterDto) {

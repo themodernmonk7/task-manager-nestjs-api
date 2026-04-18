@@ -19,6 +19,13 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    /**
+     * 1. Check email already exists?
+     * 2. Hash the password
+     * 3. Create user
+     * 4. Generate JWT token
+     * 5. Return the token
+     */
     // Todo: Handle prisma transaction
     const existingUser = await this.userService.getUserByEmail(
       registerDto.email,
@@ -50,24 +57,36 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     /**
      * 1. Get the user from db
-     * 2. Math the password with hashed password
+     * 2. Match the password with hashed password
      * 3. Create JWT token
      * 4. Return user and JWT token
      */
 
-    const isUserExist = await this.userService.getUserByEmail(loginDto.email);
+    const user = await this.userService.getUserByEmail(loginDto.email);
 
-    if (!isUserExist) {
+    if (!user) {
       throw new UnauthorizedException(`Email or password is invalid!`);
     }
 
     const isPasswordMatch = await bcrypt.compare(
       loginDto.password,
-      isUserExist.password,
+      user.password,
     );
 
     if (!isPasswordMatch) {
       throw new UnauthorizedException(`Email or password is invalid!`);
     }
+
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    const { password, ...userWithoutPassword } = user;
+
+    return {
+      ...userWithoutPassword,
+      tokens: {
+        accessToken,
+      },
+    };
   }
 }
