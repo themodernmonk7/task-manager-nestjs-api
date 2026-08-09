@@ -22,5 +22,5 @@ jobs:
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/task-manager-nestjs-api
+            cd /home/ubuntu/apps/task-manager-nestjs-api
             ./deploy.sh

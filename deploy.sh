@@ -23,6 +23,6 @@ echo "🔄 Restarting application..."
 pm2 reload ecosystem.config.js
 
 echo "❤️ Running health check..."
-./health.check.sh
+./health-check.sh
 
 echo "✅ Deployment successful!"
