@@ -23,4 +23,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/apps/task-manager-nestjs-api
+            git pull origin main
             ./deploy.sh

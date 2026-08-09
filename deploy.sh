@@ -8,9 +8,6 @@ nvm use default
 
 echo "🚀 Starting deployment..."
 
-echo "📥 Pulling latest code..."
-git pull origin main
-
 echo "📦 Installing dependencies..."
 npm ci
 
