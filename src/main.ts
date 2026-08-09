@@ -10,6 +10,7 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
     .setTitle('Notes API documents')
     .setDescription('This is the documentation for notes api')

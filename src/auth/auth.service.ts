@@ -80,7 +80,7 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
 
-    const { password, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
 
     return {
       ...userWithoutPassword,
