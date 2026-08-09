@@ -4,8 +4,8 @@
   "testEnvironment": "node",
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/src/$1",
-      "^generated/(.*)$": "<rootDir>/generated/$1"
-
+    "^generated/(.*)$": "<rootDir>/generated/$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1"
   },
   "testRegex": "test/.*\\.e2e-spec.ts$",
   "transform": {
