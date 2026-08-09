@@ -2,6 +2,10 @@
 
 set -e
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm use default
+
 echo "🚀 Starting deployment..."
 
 echo "📥 Pulling latest code..."
